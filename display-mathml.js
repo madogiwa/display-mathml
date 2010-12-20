@@ -127,17 +127,17 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXML = function(mathTag) {
             console.log('retrieve method: MSIE');
             xml = this.retrieveXMLForMSIE(mathTag);
         }
+
+        xml = xml.replace(/\&amp\;([a-zA-Z]+)\;/g, function(whole, g1) {
+            var unicode = mdgw.mathml.Entities[g1];
+            return (unicode) ? unicode : g1;
+        });
     } else if (typeof XMLSerializer != 'undefined') {
         console.log('retrieve method: Modern Browser');
         xml = this.retrieveXMLForModernBrowser(mathTag);
     } else {
         throw new Error('unsupported browser');
     }
-
-    xml = xml.replace(/\&amp\;([a-zA-Z]+)\;/g, function(whole, g1) {
-        var unicode = mdgw.mathml.Entities[g1];
-        return (unicode) ? unicode : g1;
-    });
 
     return xml;
 };
@@ -149,6 +149,11 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXMLForModernBrowser = function(mathT
 
     var dummy = mathTag.ownerDocument.createElement('div');
     dummy.appendChild(mathTag);
+
+    xml = xml.replace(/\&([a-zA-Z]+)\;/g, function(whole, g1) {
+        var unicode = mdgw.mathml.Entities[g1];
+        return (unicode) ? unicode : g1;
+    });
 
     return xml;
 };
@@ -845,5 +850,6 @@ mdgw.mathml.Entities = {
     'RuleDelayed':'\uF51F',
 
     /* Other */
-    'PlusMinus': '\u00B1'
+    'PlusMinus': '\u00B1',
+    'nbsp': ' '
 };
