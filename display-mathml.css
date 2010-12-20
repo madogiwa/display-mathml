@@ -1,0 +1,333 @@
+/*
+ * Copyright (c) 2010 Hidenori Sugiyama
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+.math {
+    font-family: 'STIXGeneral', 'STIXIntegralsDisplay', 'STIXIntegralsSmall', 'STIXIntegralsUpDisplay', 'STIXIntegralsUp', 'STIXIntegralsUpSmall', 'STIXNonUnicode', 'STIXSize1Symbols', 'STIXSize2Symbols', 'STIXSize3Symbols', 'STIXSize4Symbols', 'STIXSize5Symbols', 'STIXVariants', 'Times New Roman', serif;
+}
+
+.math-block {
+    display: block;
+}
+
+.math-inline {
+    display: inline-block;
+    /* IE6, 7 */
+    display: inline\9;
+    zoom: 1\9;
+}
+
+/* token elements */
+.math .mi {
+}
+
+.math .mn {
+}
+
+.math .mo {
+    padding-right: 0.3ex;
+    padding-left: 0.3ex;
+}
+
+.math .mtext {
+}
+
+.math .mspace {
+}
+
+.math .ms {
+}
+
+.math .mglyph {
+}
+
+/* layout schemata */
+.math .mrow {
+}
+
+.math .mfrac {
+	vertical-align: middle;
+    text-align: center;
+
+    padding-right: 0.5ex;
+    padding-left: 0.5ex;
+}
+
+.math .mfrac-numerator {
+    display: block;
+    width: 100%;
+
+    border-bottom: 1px solid #000;
+}
+
+.math .mfrac-denominator {
+    display: block;
+    width: 100%;
+/*
+    position: relative;
+    top: -1px;
+    border-top: 1px solid #000;
+*/
+}
+
+.math .msqrt {
+    padding-top: 0.4em;
+}
+
+.math .msqrt-root {
+    font-size: 16px;
+}
+
+.math .msqrt-base {
+    border-top: 1px solid #000;
+
+    padding-left: 0.4ex;
+}
+
+.math .mroot {
+    padding-top: 0.4em;
+}
+
+.math .mroot-symbol {
+    position: relative;
+}
+
+.math .mroot-root {
+    font-size: 20px;
+}
+
+.math .mroot-index {
+    font-size: 64%;
+
+    position: absolute;
+    top: -50%;
+
+    /* IE6, 7 */
+    /position: relative\9;
+    /top:  -25%\9;
+}
+
+.math .mroot-base {
+    border-top: 1px solid #000;
+}
+
+.math .mstyle {
+}
+
+.math .merror {
+}
+
+.math .mpadded {
+}
+
+.math .mphantom {
+}
+
+.math .mfenced {
+}
+
+.math .mfenced-list {
+}
+
+.math .mfenced-scala {
+}
+
+.math .mfenced-separator {
+}
+
+.math .mfenced-open {
+    padding-left: 0.3ex;
+    padding-right: 0.3ex;
+}
+
+.math .mfenced-close {
+    padding-left: 0.3ex;
+    padding-right: 0.3ex;
+}
+
+.math .menclose {
+}
+
+/* script and limit schemata */
+.math .msub {
+    text-align: center;
+    margin-right: 0.3ex;
+}
+
+.math .msub-base {
+}
+
+.math .msub-subscript {
+    font-size: 64%;
+    vertical-align: -15%;
+}
+
+.math .msub-subscript * {
+    vertical-align: bottom;
+}
+
+.math .msup {
+    text-align: center;
+}
+
+.math .msup-base {
+}
+
+.math .msup-superscript {
+    font-size: 64%;
+    vertical-align: super;
+}
+
+.math .msubsup {
+}
+
+.math .msubsup-base {
+    vertical-align: middle;
+    font-size: 136%;
+}
+
+.math .msubsup table {
+    vertical-align: middle;
+    display: inline-table;
+    table-layout: fixed;
+    /* IE7, 8 */
+    /display: inline\9;
+    /zoom: 1\9;
+    /table-layout: auto\9;
+}
+
+.math .msubsup-superscript {
+    font-size: 64%;
+    padding: 0px;
+
+    text-align: left;
+}
+
+.math .msubsup-superscript * {
+    vertical-align: top;
+}
+
+.math .msubsup-subscript {
+    font-size: 64%;
+    padding: 0px;
+
+    text-align: left;
+}
+
+.math .msubsup-subscript * {
+    vertical-align: bottom;
+}
+
+.math .munder {
+}
+
+.math .munder-base {
+    display: block;
+    width: 100%;
+}
+
+.math .munder-underscript {
+    display: block;
+    width: 100%;
+
+    font-size: 64%;
+}
+
+.math .mover {
+}
+
+.math .mover-base {
+    display: block;
+    width: 100%;
+}
+
+.math .mover-overscript {
+    display: block;
+    width: 100%;
+
+    text-align: center;
+    font-size: 64%;
+}
+
+.math .munderover {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.math .munderover-base {
+    width: 100%;
+
+    font-size: 132%;
+}
+
+.math .munderover-underscript {
+    display: block;
+    width: 100%;
+
+    text-align: center;
+    font-size: 64%;
+}
+
+.math .munderover-overscript {
+    display: block;
+    width: 100%;
+
+    font-size: 64%;
+}
+
+.math .mmultiscripts {
+}
+
+/* table and matrices */
+.math .mtable {
+    vertical-align: middle;
+}
+
+.math .mtable table {
+    display: inline-table;
+    table-layout: fixed;
+    /* IE7, 8 */
+    /display: inline\9;
+    /zoom: 1\9;
+    /table-layout: auto\9;
+}
+
+.math .mtr {
+}
+
+.math .mlabeledtr {
+}
+
+.math .mtd {
+    vertical-align: middle;
+    text-align: center;
+
+    padding-left: 0.5ex;
+    padding-right: 0.5ex;
+}
+
+/* inline-block */
+.math div {
+    display: inline-block;
+    /display: inline;
+    /zoom: 1;
+}
+
