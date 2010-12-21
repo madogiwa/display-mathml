@@ -502,6 +502,30 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         this._handle(underscript, children[1]);
         this._handle(overscript, children[2]);
         break;
+      case 'mmultiscripts':
+        var fragment = mdgw.mathml.createElement('div', 'mmultiscripts', target);
+        
+        var base = mdgw.mathml.createElement('div', 'mmultiscripts-base', target);
+
+        var script = mdgw.mathml.createElement('div', 'mmultiscripts-script', target);
+        var prescript = mdgw.mathml.createElement('div', 'mmultiscripts-prescript', target);
+
+        var children = mdgw.mathml.childElements(child);
+        this._handle(base, children[0]);
+
+        var i = 1;
+        for (; i < children.length; i++) {
+            if (children[i].nodeName == 'mprescripts') {
+                i++;
+                break;
+            }
+        }
+
+        // prescripts
+        for (; i < children.length; i++) {
+        }
+
+        break;
       case 'mtable':
         var fragment = mdgw.mathml.createElement('div', 'mtable', target);
 
@@ -751,12 +775,12 @@ mdgw.mathml.Entities = {
     'NegativeThinSpace':     '\uE899',
     'NegativeMediumSpace':   '\uE89A',
     'NegativeThickSpace':    '\uE89B',
-    'InvisibleComma':        ' ', // \uE89C
-    'ic':                    ' ', // \uE89C
-    'InvisibleTimes':        ' ', // \uE89E
-    'it;':                   ' ', // \uE89E
-    'ApplyFunction':         ' ', // \uE8A0
-    'af':                    ' ', // \uE8A0
+    'InvisibleComma':        '', // \uE89C
+    'ic':                    '', // \uE89C
+    'InvisibleTimes':        '', // \uE89E
+    'it;':                   '', // \uE89E
+    'ApplyFunction':         '', // \uE8A0
+    'af':                    '', // \uE8A0
     /* Special Constants */
     'CapitalDifferentialD':  '\uF74B',
     'DD':                    '\uF74B',
