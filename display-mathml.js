@@ -24,6 +24,10 @@
 (typeof mdgw != 'undefined') ? null : mdgw = {};
 (typeof mdgw.mathml != 'undefined') ? null : mdgw.mathml = {};
 
+// console
+(typeof console != 'undefined') ? null : console = {};
+(typeof console.log != 'undefined') ? null : console.log = function(msg){};
+
 // enable/disable flag for onLoad handler
 mdgw.mathml.autoExec = true;
 
