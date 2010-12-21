@@ -128,7 +128,7 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXML = function(mathTag) {
             xml = this.retrieveXMLForMSIE(mathTag);
         }
 
-        xml = xml.replace(/\&amp\;([a-zA-Z]+)\;/g, function(whole, g1) {
+        xml = xml.replace(/\&nbsp\;/, '').replace(/\&amp\;([a-zA-Z]+)\;/g, function(whole, g1) {
             var unicode = mdgw.mathml.Entities[g1];
             return (unicode) ? unicode : g1;
         });
