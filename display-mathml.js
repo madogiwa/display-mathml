@@ -636,6 +636,8 @@ mdgw.mathml.StretchHandler.prototype.update = function() {
     var browserInfo = mdgw.mathml.getBrowserInfo();
     if ((browserInfo.type == 'msie' && browserInfo.engine >= 8) ||
         (browserInfo.type != 'opera')) {
+        // avoid setHeight bug
+    } else {
         this.setHeight(this._target, height);
     }
 };
