@@ -751,8 +751,8 @@ mdgw.mathml.childElements = function(node, length) {
         elements.push(child);
     }
 
-    if (length && elements.length != length) {
-        throw new Error('');
+    if (length && elements.length < length) {
+        throw new Error('elements.length too short');
     }
     return elements;
 };
