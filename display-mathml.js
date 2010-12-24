@@ -492,8 +492,13 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         break;
       case 'munder':
         var fragment = mdgw.mathml.createElement('div', 'munder', target);
-        var base = mdgw.mathml.createElement('div', 'munder-base', fragment);
-        var underscript = mdgw.mathml.createElement('div', 'munder-underscript', fragment);
+
+        var table = mdgw.mathml.createElement('table', '', fragment);
+        var tbody = mdgw.mathml.createElement('tbody', '', table);
+        var tr1 = mdgw.mathml.createElement('tr', '', tbody);
+        var base = mdgw.mathml.createElement('td', 'munder-base', tr1);
+        var tr2 = mdgw.mathml.createElement('tr', '', tbody);
+        var underscript = mdgw.mathml.createElement('td', 'munder-underscript', tr2);
 
         var children = mdgw.mathml.childElements(child, 2);
         this._handle(base, children[0]);
