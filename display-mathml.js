@@ -138,7 +138,7 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXML = function(mathTag) {
 
         xml = xml.replace(/\&nbsp\;/, '').replace(/\&amp\;([a-zA-Z]+)\;/g, function(whole, g1) {
             var unicode = mdgw.mathml.Entities[g1];
-            return (unicode) ? unicode : g1;
+            return (unicode) ? unicode : '&amp;' + g1 + ';';
         });
     } else if (typeof XMLSerializer != 'undefined') {
         console.log('retrieve method: Modern Browser');
@@ -152,7 +152,7 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXML = function(mathTag) {
 
 mdgw.mathml.DisplayMathML.prototype.retrieveXMLForModernBrowser = function(mathTag) {
     var serializer = new XMLSerializer();
-    xml = serializer.serializeToString(mathTag);
+    var xml = serializer.serializeToString(mathTag);
     console.log(xml);
 
     var dummy = mathTag.ownerDocument.createElement('div');
@@ -160,7 +160,7 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXMLForModernBrowser = function(mathT
 
     xml = xml.replace(/\&([a-zA-Z]+)\;/g, function(whole, g1) {
         var unicode = mdgw.mathml.Entities[g1];
-        return (unicode) ? unicode : g1;
+        return (unicode) ? unicode : '&' + g1 + ';';
     });
 
     return xml;
@@ -329,7 +329,6 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
       case 'mi':
       case 'mn':
       case 'mtext':
-      case 'mspace':
       case 'ms':
         var fragment = mdgw.mathml.createElement('span', tagName, target);
         var text = (typeof child.text != 'undefined') ? child.text : child.textContent;
@@ -340,6 +339,9 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         } else {
             fragment.innerText = text;
         }
+        break;
+      case 'mspace':
+        var fragment = mdgw.mathml.createElement('span', tagName, target);
         break;
       case 'msglyph':
         var fragment = mdgw.mathml.createElement('div', tagName, target);
@@ -557,6 +559,8 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         break;
       case 'mtd':
         var fragment = mdgw.mathml.createElement('td', 'mtd', target);
+        fragment.rowspan = child.rowspan;
+        fragment.colspan = child.colspan;
         this._recursive(fragment, child);
         break;
       default:
