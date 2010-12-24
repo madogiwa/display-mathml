@@ -67,7 +67,11 @@ mdgw.mathml.DisplayMathML = function() {
 mdgw.mathml.DisplayMathML.prototype.replaceAll = function(doc) {
     var mathTags = this.scan(doc);
     for(var i = 0; i < mathTags.length; i++) {
-        this.replace(mathTags[i]);
+        try {
+            this.replace(mathTags[i]);
+        } catch (x) {
+            console.log('render failed:' + x);
+        }
     }
 };
 
