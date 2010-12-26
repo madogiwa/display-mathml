@@ -74,7 +74,7 @@ mdgw.mathml.DisplayMathML.prototype.replaceAll = function(doc) {
         try {
             this.replace(mathTags[i]);
         } catch (x) {
-            console.log('render failed:' + x);
+            console.log('replace failed:' + x);
         }
     }
 };
@@ -86,10 +86,10 @@ mdgw.mathml.DisplayMathML.prototype.replace = function(mathTag) {
     var target = mathTag.ownerDocument.createElement('div');
 
     mathTag.parentNode.insertBefore(target, mathTag);
-    var doc = this.retrieve(mathTag);
+    var rootElement = this.retrieve(mathTag);
 
     var renderer = new mdgw.mathml.MathMLRenderer();
-    renderer.render(target, doc);
+    renderer.render(target, rootElement);
 };
 
 /*
@@ -117,8 +117,12 @@ mdgw.mathml.DisplayMathML.prototype.scan = function(doc) {
  */
 mdgw.mathml.DisplayMathML.prototype.retrieve = function(mathTag) {
     var xml = this.retrieveXML(mathTag);
-    var doc = this.loadFromXML(xml);
-    return doc;
+    if (typeof xml === 'string') {
+        var doc = this.loadFromXML(xml);
+        return doc.documentElement;
+    } else {
+        return xml;
+    }
 };
 
 /*
@@ -129,6 +133,15 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXML = function(mathTag) {
 
     var browserInfo = mdgw.mathml.getBrowserInfo();
     if (browserInfo.type == 'msie') {
+        if (!mathTag.outerHTML) {
+            // maybe mime application/xml+html
+            console.log('maybe mime application/xml+html');
+
+            var dummy = mathTag.ownerDocument.createElement('div');
+            dummy.appendChild(mathTag);
+            return mathTag;
+        }
+
         var html = mathTag.outerHTML;
         if (html.match(/^\<\?xml:namespace prefix = [a-z0-9]*.*\/\>/i, '') ||
             html.match(/^\<([a-zA-Z0-9.]+\:)?math/)) {
@@ -248,10 +261,7 @@ mdgw.mathml.MathMLRenderer = function() {
 /*
  *
  */
-mdgw.mathml.MathMLRenderer.prototype.render = function(target, doc) {
-    var root = doc.documentElement;
-    console.log(root.attributes);
-
+mdgw.mathml.MathMLRenderer.prototype.render = function(target, root) {
     var display = 'inline';
     if (root.getAttribute('mode') != null) {
         display = (root.getAttribute('mode') == 'display') ? 'block' : 'inline';
@@ -260,7 +270,7 @@ mdgw.mathml.MathMLRenderer.prototype.render = function(target, doc) {
     }
     target.className = 'math math-' + display;
 
-    this._recursive(target, doc.childNodes[0]);
+    this._recursive(target, root);
 
     var self = this;
     setTimeout(function() {
