@@ -65,9 +65,17 @@ mdgw.mathml.DisplayMathML = function() {
  *
  */
 mdgw.mathml.DisplayMathML.prototype.replaceAll = function(doc) {
+    if (typeof doc == 'undefined') {
+        doc = document;
+    }
+
     var mathTags = this.scan(doc);
     for(var i = 0; i < mathTags.length; i++) {
-        this.replace(mathTags[i]);
+        try {
+            this.replace(mathTags[i]);
+        } catch (x) {
+            console.log('replace failed:' + x);
+        }
     }
 };
 
@@ -78,10 +86,10 @@ mdgw.mathml.DisplayMathML.prototype.replace = function(mathTag) {
     var target = mathTag.ownerDocument.createElement('div');
 
     mathTag.parentNode.insertBefore(target, mathTag);
-    var doc = this.retrieve(mathTag);
+    var rootElement = this.retrieve(mathTag);
 
     var renderer = new mdgw.mathml.MathMLRenderer();
-    renderer.render(target, doc);
+    renderer.render(target, rootElement);
 };
 
 /*
@@ -97,7 +105,7 @@ mdgw.mathml.DisplayMathML.prototype.scan = function(doc) {
 
     mathTags.pushElements(doc.getElementsByTagName('math'));
     if (typeof doc.getElementsByTagNameNS != 'undefined') {
-        mathTags.pushElements(doc.getElementsByTagName('math'));
+        mathTags.pushElements(doc.getElementsByTagNameNS('http://www.w3.org/1998/Math/MathML', 'math'));
     }
     mathTags.pushElements(doc.getElementsByTagName('mml:math')); /* Microsoft Office */
 
@@ -109,8 +117,12 @@ mdgw.mathml.DisplayMathML.prototype.scan = function(doc) {
  */
 mdgw.mathml.DisplayMathML.prototype.retrieve = function(mathTag) {
     var xml = this.retrieveXML(mathTag);
-    var doc = this.loadFromXML(xml);
-    return doc;
+    if (typeof xml === 'string') {
+        var doc = this.loadFromXML(xml);
+        return doc.documentElement;
+    } else {
+        return xml;
+    }
 };
 
 /*
@@ -121,6 +133,15 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXML = function(mathTag) {
 
     var browserInfo = mdgw.mathml.getBrowserInfo();
     if (browserInfo.type == 'msie') {
+        if (!mathTag.outerHTML) {
+            // maybe mime application/xml+html
+            console.log('maybe mime application/xml+html');
+
+            var dummy = mathTag.ownerDocument.createElement('div');
+            dummy.appendChild(mathTag);
+            return mathTag;
+        }
+
         var html = mathTag.outerHTML;
         if (html.match(/^\<\?xml:namespace prefix = [a-z0-9]*.*\/\>/i, '') ||
             html.match(/^\<([a-zA-Z0-9.]+\:)?math/)) {
@@ -134,7 +155,7 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXML = function(mathTag) {
 
         xml = xml.replace(/\&nbsp\;/, '').replace(/\&amp\;([a-zA-Z]+)\;/g, function(whole, g1) {
             var unicode = mdgw.mathml.Entities[g1];
-            return (unicode) ? unicode : g1;
+            return (unicode) ? unicode : '&amp;' + g1 + ';';
         });
     } else if (typeof XMLSerializer != 'undefined') {
         console.log('retrieve method: Modern Browser');
@@ -148,7 +169,7 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXML = function(mathTag) {
 
 mdgw.mathml.DisplayMathML.prototype.retrieveXMLForModernBrowser = function(mathTag) {
     var serializer = new XMLSerializer();
-    xml = serializer.serializeToString(mathTag);
+    var xml = serializer.serializeToString(mathTag);
     console.log(xml);
 
     var dummy = mathTag.ownerDocument.createElement('div');
@@ -156,7 +177,7 @@ mdgw.mathml.DisplayMathML.prototype.retrieveXMLForModernBrowser = function(mathT
 
     xml = xml.replace(/\&([a-zA-Z]+)\;/g, function(whole, g1) {
         var unicode = mdgw.mathml.Entities[g1];
-        return (unicode) ? unicode : g1;
+        return (unicode) ? unicode : '&' + g1 + ';';
     });
 
     return xml;
@@ -240,10 +261,7 @@ mdgw.mathml.MathMLRenderer = function() {
 /*
  *
  */
-mdgw.mathml.MathMLRenderer.prototype.render = function(target, doc) {
-    var root = doc.documentElement;
-    console.log(root.attributes);
-
+mdgw.mathml.MathMLRenderer.prototype.render = function(target, root) {
     var display = 'inline';
     if (root.getAttribute('mode') != null) {
         display = (root.getAttribute('mode') == 'display') ? 'block' : 'inline';
@@ -252,7 +270,7 @@ mdgw.mathml.MathMLRenderer.prototype.render = function(target, doc) {
     }
     target.className = 'math math-' + display;
 
-    this._recursive(target, doc.childNodes[0]);
+    this._recursive(target, root);
 
     var self = this;
     setTimeout(function() {
@@ -325,7 +343,6 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
       case 'mi':
       case 'mn':
       case 'mtext':
-      case 'mspace':
       case 'ms':
         var fragment = mdgw.mathml.createElement('span', tagName, target);
         var text = (typeof child.text != 'undefined') ? child.text : child.textContent;
@@ -336,6 +353,9 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         } else {
             fragment.innerText = text;
         }
+        break;
+      case 'mspace':
+        var fragment = mdgw.mathml.createElement('span', tagName, target);
         break;
       case 'msglyph':
         var fragment = mdgw.mathml.createElement('div', tagName, target);
@@ -488,8 +508,13 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         break;
       case 'munder':
         var fragment = mdgw.mathml.createElement('div', 'munder', target);
-        var base = mdgw.mathml.createElement('div', 'munder-base', fragment);
-        var underscript = mdgw.mathml.createElement('div', 'munder-underscript', fragment);
+
+        var table = mdgw.mathml.createElement('table', '', fragment);
+        var tbody = mdgw.mathml.createElement('tbody', '', table);
+        var tr1 = mdgw.mathml.createElement('tr', '', tbody);
+        var base = mdgw.mathml.createElement('td', 'munder-base', tr1);
+        var tr2 = mdgw.mathml.createElement('tr', '', tbody);
+        var underscript = mdgw.mathml.createElement('td', 'munder-underscript', tr2);
 
         var children = mdgw.mathml.childElements(child, 2);
         this._handle(base, children[0]);
@@ -548,6 +573,8 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         break;
       case 'mtd':
         var fragment = mdgw.mathml.createElement('td', 'mtd', target);
+        fragment.rowspan = child.rowspan;
+        fragment.colspan = child.colspan;
         this._recursive(fragment, child);
         break;
       default:
@@ -742,8 +769,8 @@ mdgw.mathml.childElements = function(node, length) {
         elements.push(child);
     }
 
-    if (length && elements.length != length) {
-        throw new Error('');
+    if (length && elements.length < length) {
+        throw new Error('elements.length too short');
     }
     return elements;
 };
