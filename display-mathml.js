@@ -65,6 +65,10 @@ mdgw.mathml.DisplayMathML = function() {
  *
  */
 mdgw.mathml.DisplayMathML.prototype.replaceAll = function(doc) {
+    if (typeof doc == 'undefined') {
+        doc = document;
+    }
+
     var mathTags = this.scan(doc);
     for(var i = 0; i < mathTags.length; i++) {
         try {
@@ -101,7 +105,7 @@ mdgw.mathml.DisplayMathML.prototype.scan = function(doc) {
 
     mathTags.pushElements(doc.getElementsByTagName('math'));
     if (typeof doc.getElementsByTagNameNS != 'undefined') {
-        mathTags.pushElements(doc.getElementsByTagName('math'));
+        mathTags.pushElements(doc.getElementsByTagNameNS('http://www.w3.org/1998/Math/MathML', 'math'));
     }
     mathTags.pushElements(doc.getElementsByTagName('mml:math')); /* Microsoft Office */
 
