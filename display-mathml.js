@@ -323,6 +323,12 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
     tagName = tagName.replace(/^[a-zA-Z0-9]+:/, '');
 
     switch(tagName) {
+      case 'maction':
+        var actiontype = child.getAttribute('actiontype');
+        var selection = child.getAttribute('selection');
+        selection = (typeof selection != 'undefined') ? selection : 1;
+ 
+        break;
       case 'mo':
         var fragment = null;
         var text = (typeof child.text != 'undefined') ? child.text : child.textContent;
@@ -534,26 +540,45 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
       case 'mmultiscripts':
         var fragment = mdgw.mathml.createElement('div', 'mmultiscripts', target);
         
-        var base = mdgw.mathml.createElement('div', 'mmultiscripts-base', target);
-
-        var script = mdgw.mathml.createElement('div', 'mmultiscripts-script', target);
-        var prescript = mdgw.mathml.createElement('div', 'mmultiscripts-prescript', target);
+        var base = mdgw.mathml.createElement('div', 'mmultiscripts-base', fragment);
 
         var children = mdgw.mathml.childElements(child);
         this._handle(base, children[0]);
 
+        var table = mdgw.mathml.createElement('table', '', fragment);
+        var tbody = mdgw.mathml.createElement('tbody', '', table);
+        var superscript = mdgw.mathml.createElement('tr', 'mmultiscripts-superscript', tbody);
+        var subscript = mdgw.mathml.createElement('tr', 'mmultiscripts-subscript', tbody);
+
         var i = 1;
-        for (; i < children.length; i++) {
+        for (; i < children.length; i = i + 2) {
             if (children[i].nodeName == 'mprescripts') {
                 i++;
                 break;
             }
+
+            var sub = mdgw.mathml.createElement('td', 'mmultiscripts', subscript);
+            var sup = mdgw.mathml.createElement('td', 'mmultiscripts', superscript);
+            this._handle(sub, children[i]);
+            this._handle(sup, children[i+1]);
         }
 
         // prescripts
-        for (; i < children.length; i++) {
+        var preTable = mdgw.mathml.createElement('table', '', fragment);
+        var preTbody = mdgw.mathml.createElement('tbody', '', preTable);
+        var preSuperscript = mdgw.mathml.createElement('tr', 'mmultiscripts-presuperscript', preTbody);
+        var preSubscript = mdgw.mathml.createElement('tr', 'mmultiscripts-presubscript', preTbody);
+        fragment.insertBefore(preTable, base);
+
+        for (; i < children.length; i = i + 2) {
+            var sub = mdgw.mathml.createElement('td', 'mmultiscripts', preSubscript);
+            var sup = mdgw.mathml.createElement('td', 'mmultiscripts', preSuperscript);
+            this._handle(sub, children[i]);
+            this._handle(sup, children[i+1]);
         }
 
+        break;
+      case 'none':
         break;
       case 'mtable':
         var fragment = mdgw.mathml.createElement('div', 'mtable', target);

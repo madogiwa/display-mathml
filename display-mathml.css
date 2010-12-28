@@ -296,6 +296,36 @@
 .math .mmultiscripts {
 }
 
+.math .mmultiscripts table {
+    vertical-align: middle;
+    display: inline-table;
+    table-layout: fixed;
+    /* IE7, 8 */
+    /display: inline\9;
+    /zoom: 1\9;
+    /table-layout: auto\9;
+}
+
+.math .mmultiscripts-subscript * {
+	vertical-align: sub;
+	font-size: 64%;
+}
+
+.math .mmultiscripts-superscript * {
+	vertical-align: super;
+	font-size: 64%;
+}
+
+.math .mmultiscripts-presubscript * {
+	vertical-align: sub;
+	font-size: 64%;
+}
+
+.math .mmultiscripts-presuperscript * {
+	vertical-align: super;
+	font-size: 64%;
+}
+
 /* table and matrices */
 .math .mtable {
     vertical-align: middle;
