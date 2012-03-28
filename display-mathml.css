@@ -21,7 +21,7 @@
  */
 
 .math {
-    font-family: 'STIXGeneral', 'STIXIntegralsDisplay', 'STIXIntegralsSmall', 'STIXIntegralsUpDisplay', 'STIXIntegralsUp', 'STIXIntegralsUpSmall', 'STIXNonUnicode', 'STIXSize1Symbols', 'STIXSize2Symbols', 'STIXSize3Symbols', 'STIXSize4Symbols', 'STIXSize5Symbols', 'STIXVariants', 'Times New Roman', serif;
+    font-family: 'Times New Roman', serif;
 }
 
 .math-block {
