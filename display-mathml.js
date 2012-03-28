@@ -300,11 +300,11 @@ mdgw.mathml.MathMLRenderer.prototype._recursive = function(target, node) {
 
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
-        if (child.nodeType !== 1) {
-            continue;
+        if (child.nodeType === 1) {
+            this._handle(target, child);
+        } else if (child.nodeType === 3) {
+            this._handleTextNode(target, child);
         }
-
-       this._handle(target, child);
     }
 };
 
@@ -330,35 +330,12 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
  
         break;
       case 'mo':
-        var fragment = null;
-        var text = (typeof child.text != 'undefined') ? child.text : child.textContent;
-        text = text.replace(/(^\s+)|(\s+$)/g, "");
-        text = text.replace(/\u2061/g, ""); // Function Application (for IE)
-        if (text.match(/([()\[\]]|\u222e|\u03a3|\u2211|\u222b)/)) {
-            fragment = mdgw.mathml.createElement('span', tagName, target);
-        } else {
-            fragment = mdgw.mathml.createElement('span', tagName, target);
-        }
-
-        if (typeof fragment.textContent != 'undefined') {
-            fragment.textContent = text;
-        } else {
-            fragment.innerText = text;
-        }
-        break;
       case 'mi':
       case 'mn':
       case 'mtext':
       case 'ms':
         var fragment = mdgw.mathml.createElement('span', tagName, target);
-        var text = (typeof child.text != 'undefined') ? child.text : child.textContent;
-        text = text.replace(/(^\s+)|(\s+$)/g, "");
-        text = text.replace(/\u2061/g, ""); // Function Application (for IE)
-        if (typeof fragment.textContent != 'undefined') {
-            fragment.textContent = text;
-        } else {
-            fragment.innerText = text;
-        }
+        this._recursive(fragment, child);
         break;
       case 'mspace':
         var fragment = mdgw.mathml.createElement('span', tagName, target);
@@ -391,8 +368,8 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         }
 
         var children = mdgw.mathml.childElements(child, 2);
-        this._handle(numerator, children[0]);
-        this._handle(denominator, children[1]);
+        this._recursive(numerator, children[0]);
+        this._recursive(denominator, children[1]);
 
         //this._handlers.push(new mdgw.mathml.SameHeightHandler(numerator, denominator));
 
@@ -428,8 +405,8 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
 
         var base = mdgw.mathml.createElement('div', 'mroot-base', fragment);
         var children = mdgw.mathml.childElements(child, 2);
-        this._handle(base, children[0]);
-        this._handle(index, children[1]);
+        this._recursive(base, children[0]);
+        this._recursive(index, children[1]);
 
         this._handlers.push(new mdgw.mathml.StretchHandler(base, root));
 
@@ -441,7 +418,7 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var children = mdgw.mathml.childElements(child);
         for (var i = 0; i < children.length; i++) {
             var scala = mdgw.mathml.createElement('div', 'mfenced-scala', list);
-            this._handle(scala, children[i]);
+            this._recursive(scala, children[i]);
 
             if (i != (children.length - 1)) {
                 var separator = mdgw.mathml.createElement('span', 'mfenced-separator', list);
@@ -470,10 +447,10 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var children = mdgw.mathml.childElements(child, 2);
         var node = mdgw.mathml.createElement('div', 'msup', target);
         var base = mdgw.mathml.createElement('div', 'msup-base', node);
-        this._handle(base, children[0]);
+        this._recursive(base, children[0]);
 
         var superscript = mdgw.mathml.createElement('div', 'msup-superscript', node);
-        this._handle(superscript, children[1]);
+        this._recursive(superscript, children[1]);
 
         break;
       case 'msub':
@@ -481,10 +458,10 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
 
         var node = mdgw.mathml.createElement('div', 'msub', target);
         var base = mdgw.mathml.createElement('div', 'msub-base', node);
-        this._handle(base, children[0]);
+        this._recursive(base, children[0]);
 
         var subscript = mdgw.mathml.createElement('div', 'msub-subscript', node);
-        this._handle(subscript, children[1]);
+        this._recursive(subscript, children[1]);
 
         break; 
       case 'msubsup':
@@ -499,9 +476,9 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var subscript = mdgw.mathml.createElement('td', 'msubsup-subscript', tr2);
 
         var children = mdgw.mathml.childElements(child, 3);
-        this._handle(base, children[0]);
-        this._handle(subscript, children[1]);
-        this._handle(superscript, children[2]);
+        this._recursive(base, children[0]);
+        this._recursive(subscript, children[1]);
+        this._recursive(superscript, children[2]);
         break;
       case 'mover':
         var fragment = mdgw.mathml.createElement('div', 'mover', target);
@@ -509,8 +486,8 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var base = mdgw.mathml.createElement('div', 'mover-base', fragment);
 
         var children = mdgw.mathml.childElements(child, 2);
-        this._handle(base, children[0]);
-        this._handle(overscript, children[1]);
+        this._recursive(base, children[0]);
+        this._recursive(overscript, children[1]);
         break;
       case 'munder':
         var fragment = mdgw.mathml.createElement('div', 'munder', target);
@@ -523,8 +500,8 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var underscript = mdgw.mathml.createElement('td', 'munder-underscript', tr2);
 
         var children = mdgw.mathml.childElements(child, 2);
-        this._handle(base, children[0]);
-        this._handle(underscript, children[1]);
+        this._recursive(base, children[0]);
+        this._recursive(underscript, children[1]);
         break;
       case 'munderover':
         var fragment = mdgw.mathml.createElement('div', 'munderover', target);
@@ -533,9 +510,9 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var underscript = mdgw.mathml.createElement('div', 'munderover-underscript', fragment);
 
         var children = mdgw.mathml.childElements(child, 3);
-        this._handle(base, children[0]);
-        this._handle(underscript, children[1]);
-        this._handle(overscript, children[2]);
+        this._recursive(base, children[0]);
+        this._recursive(underscript, children[1]);
+        this._recursive(overscript, children[2]);
         break;
       case 'mmultiscripts':
         var fragment = mdgw.mathml.createElement('div', 'mmultiscripts', target);
@@ -543,7 +520,7 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var base = mdgw.mathml.createElement('div', 'mmultiscripts-base', fragment);
 
         var children = mdgw.mathml.childElements(child);
-        this._handle(base, children[0]);
+        this._recursive(base, children[0]);
 
         var table = mdgw.mathml.createElement('table', '', fragment);
         var tbody = mdgw.mathml.createElement('tbody', '', table);
@@ -559,8 +536,8 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
 
             var sub = mdgw.mathml.createElement('td', 'mmultiscripts', subscript);
             var sup = mdgw.mathml.createElement('td', 'mmultiscripts', superscript);
-            this._handle(sub, children[i]);
-            this._handle(sup, children[i+1]);
+            this._recursive(sub, children[i]);
+            this._recursive(sup, children[i+1]);
         }
 
         // prescripts
@@ -573,8 +550,8 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         for (; i < children.length; i = i + 2) {
             var sub = mdgw.mathml.createElement('td', 'mmultiscripts', preSubscript);
             var sup = mdgw.mathml.createElement('td', 'mmultiscripts', preSuperscript);
-            this._handle(sub, children[i]);
-            this._handle(sup, children[i+1]);
+            this._recursive(sub, children[i]);
+            this._recursive(sup, children[i+1]);
         }
 
         break;
@@ -608,6 +585,9 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
     }
 };
 
+mdgw.mathml.MathMLRenderer.prototype._handleTextNode = function(target, child) {
+    target.appendChild(child.cloneNode(true));
+};
 
 /*
  * ResizeHandler
