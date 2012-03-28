@@ -37,6 +37,7 @@
 
 /* token elements */
 .math .mi {
+    font-style: italic;
 }
 
 .math .mn {
