@@ -40,14 +40,18 @@
 }
 
 .math .mn {
+    font-style: normal;
 }
 
 .math .mo {
     padding-right: 0.3ex;
     padding-left: 0.3ex;
+
+    font-style: normal;
 }
 
 .math .mtext {
+    font-style: normal;
 }
 
 .math .mspace {
