@@ -421,7 +421,7 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var children = mdgw.mathml.childElements(child);
         for (var i = 0; i < children.length; i++) {
             var scala = mdgw.mathml.createElement('div', 'mfenced-scala', list);
-            this._recursive(scala, children[i]);
+            this._handle(scala, children[i]);
 
             if (i != (children.length - 1)) {
                 var separator = mdgw.mathml.createElement('span', 'mfenced-separator', list);
