@@ -147,12 +147,15 @@
 }
 
 .math .mfenced {
+    vertical-align: middle;
 }
 
 .math .mfenced-list {
+    vertical-align: middle;
 }
 
 .math .mfenced-scala {
+    vertical-align: middle;
 }
 
 .math .mfenced-separator {
