@@ -412,6 +412,9 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
 
         break;
       case 'mfenced':
+        var openChar = child.getAttribute('open') || '(';
+        var closeChar = child.getAttribute('close') || ')';
+
         var fragment = mdgw.mathml.createElement('div', 'mfenced', target);
         var open = mdgw.mathml.createElement('div', 'mfenced-open', fragment);
         var list = mdgw.mathml.createElement('div', 'mfenced-list', fragment);
@@ -432,11 +435,11 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var close = mdgw.mathml.createElement('div', 'mfenced-close', fragment);
 
         if (typeof fragment.textContent != 'undefined') {
-            open.textContent = '(';
-            close.textContent = ')';
+            open.textContent = openChar;
+            close.textContent = closeChar;
         } else {
-            open.innerText = '(';
-            close.innerText = ')';
+            open.innerText = openChar;
+            close.innerText = closeChar;
         }
 
         this._handlers.push(new mdgw.mathml.StretchHandler(list, open));
