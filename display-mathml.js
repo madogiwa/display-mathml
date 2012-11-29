@@ -342,11 +342,7 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         break;
       case 'msglyph':
         var fragment = mdgw.mathml.createElement('div', tagName, target);
-        if (typeof fragment.textContent != 'undefined') {
-            fragment.textContent = child.getAttribute('alt');
-        } else {
-            fragment.innerText = child.getAttribute('alt');
-        }
+        fragment.appendChild(target.ownerDocument.createTextNode(child.getAttribute('alt')));
         break;
       case 'mstyle':
         var fragment = mdgw.mathml.createElement('div', 'mstyle', target);
@@ -378,11 +374,7 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var fragment = mdgw.mathml.createElement('div', 'msqrt', target);
 
         var root = mdgw.mathml.createElement('div', 'msqrt-root', fragment);
-        if (typeof root.textContent != 'undefined') {
-            root.textContent = '√';
-        } else {
-            root.innerText = '√';
-        }
+        root.appendChild(target.ownerDocument.createTextNode('√'));
 
         var base = mdgw.mathml.createElement('div', 'msqrt-base', fragment);
         this._recursive(base, child);
@@ -396,12 +388,7 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
 
         var index = mdgw.mathml.createElement('div', 'mroot-index', symbol);
         var root = mdgw.mathml.createElement('div', 'mroot-root', symbol);
-
-        if (typeof root.textContent != 'undefined') {
-            root.textContent = '√';
-        } else {
-            root.innerText = '√';
-        }
+        root.appendChild(target.ownerDocument.createTextNode('√'));
 
         var base = mdgw.mathml.createElement('div', 'mroot-base', fragment);
         var children = mdgw.mathml.childElements(child, 2);
@@ -417,6 +404,8 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
 
         var fragment = mdgw.mathml.createElement('div', 'mfenced', target);
         var open = mdgw.mathml.createElement('div', 'mfenced-open', fragment);
+        open.appendChild(target.ownerDocument.createTextNode(openChar));
+
         var list = mdgw.mathml.createElement('div', 'mfenced-list', fragment);
         var children = mdgw.mathml.childElements(child);
         for (var i = 0; i < children.length; i++) {
@@ -425,22 +414,11 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
 
             if (i != (children.length - 1)) {
                 var separator = mdgw.mathml.createElement('span', 'mfenced-separator', list);
-                if (typeof fragment.textContent != 'undefined') {
-                    separator.textContent = ',';
-                } else {
-                    separator.innerText = ',';
-                }
+                separator.appendChild(target.ownerDocument.createTextNode(','));
             }
         }
         var close = mdgw.mathml.createElement('div', 'mfenced-close', fragment);
-
-        if (typeof fragment.textContent != 'undefined') {
-            open.textContent = openChar;
-            close.textContent = closeChar;
-        } else {
-            open.innerText = openChar;
-            close.innerText = closeChar;
-        }
+        close.appendChild(target.ownerDocument.createTextNode(closeChar));
 
         this._handlers.push(new mdgw.mathml.StretchHandler(list, open));
         this._handlers.push(new mdgw.mathml.StretchHandler(list, close));
