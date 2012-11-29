@@ -670,7 +670,7 @@ mdgw.mathml.StretchHandler.prototype.stretch = function(node, height) {
     var offsetY = 0;
 
     var info = mdgw.mathml.getBrowserInfo();
-    if (info.type == 'msie') {
+    if (info.type == 'msie' && info.version < 10) {
         console.log('height:' + height + ' current: ' + currentHeight + ' -' + (height - currentHeight) / 2);
         node.style.position = 'relative';
         offsetY = (-(height - currentHeight) / 2);
