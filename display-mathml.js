@@ -589,7 +589,13 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
 };
 
 mdgw.mathml.MathMLRenderer.prototype._handleTextNode = function(target, child) {
-    target.appendChild(child.cloneNode(true));
+    var browserInfo = mdgw.mathml.getBrowserInfo();
+    if (browserInfo.type != 'msie') {
+        target.appendChild(child.cloneNode(true));
+    } else {
+        var textNode = target.ownerDocument.createTextNode(child.nodeValue);
+        target.appendChild(textNode);
+    }
 };
 
 /*
