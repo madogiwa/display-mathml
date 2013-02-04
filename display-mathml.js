@@ -379,7 +379,7 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var base = mdgw.mathml.createElement('div', 'msqrt-base', fragment);
         this._recursive(base, child);
 
-        this._handlers.push(new mdgw.mathml.StretchHandler(base, root, true));
+        this._handlers.push(new mdgw.mathml.StretchHandler(base, root));
 
         break;
       case 'mroot':
