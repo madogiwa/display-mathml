@@ -367,7 +367,7 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         this._recursive(numerator, children[0]);
         this._recursive(denominator, children[1]);
 
-        //this._handlers.push(new mdgw.mathml.SameHeightHandler(numerator, denominator));
+        this._handlers.push(new mdgw.mathml.SameHeightHandler(numerator, denominator));
 
         break;
       case 'msqrt':
@@ -597,15 +597,15 @@ mdgw.mathml.ResizeHandler.prototype.getHeight = function(node) {
  *
  */
 mdgw.mathml.ResizeHandler.prototype.setHeight = function(node, height) {
-    console.log(height);
-    node.style.height = height;
+    node.style.height = height + 'px';
 };
 
 /*
  * SameHeightHandler
  */
 mdgw.mathml.SameHeightHandler = function() {
-    Array.prototype.push.apply(this._targets, args);
+    this._targets = [];
+    Array.prototype.push.apply(this._targets, arguments);
 };
 
 /*
@@ -620,14 +620,14 @@ mdgw.mathml.SameHeightHandler.prototype.update = function() {
     var maxHeight = 0;
 
     for (var i = 0; i < this._targets.length; i++) {
-        var height = getHeight(this._targets[i]);
+        var height = this.getHeight(this._targets[i]);
         if (height > maxHeight) {
             maxHeight = height;
         }
     }
 
     for (var i = 0; i < this._targets.length; i++) {
-        setHeight(this._targets[i], maxHeight);
+        this.setHeight(this._targets[i], maxHeight);
     } 
 };
 
