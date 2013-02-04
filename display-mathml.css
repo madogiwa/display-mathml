@@ -77,11 +77,9 @@
 }
 
 .math .mfrac-numerator {
-    display: inline-block;
-    /display: inline;
-    /zoom: 1;
-    width: 100%;
+    display: block;
 
+    width: 100%;
     border-bottom: 1px solid #000;
 }
 
@@ -90,10 +88,7 @@
 }
 
 .math .mfrac-denominator {
-    display: inline-block;
-    /display: inline;
-    /zoom: 1;
-    width: 100%;
+    display: block;
 }
 
 .math .mfrac-denominator * {

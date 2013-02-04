@@ -693,8 +693,8 @@ mdgw.mathml.StretchHandler.prototype.stretch = function(node, height) {
         node.style.position = 'relative';
         node.style.top = (offsetY - marginTop / 2.0) + 'px';
 
-        node.style.filter = "progid:DXImageTransform.Microsoft.Matrix(dz=1.0, dy=20, sizingMethod='auto expand', M11=1, M12=0, M21=0, M22=" + scale + ")";
-        node.style.MsFilter = "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=1, M12=0, M21=0, M22=" + scale + ")";
+        node.style.filter = "progid:DXImageTransform.Microsoft.Matrix(M11=1, M12=0, M21=0, M22=" + scale + ", sizingMethod='auto expand')";
+        node.style.MsFilter = "progid:DXImageTransform.Microsoft.Matrix(M11=1, M12=0, M21=0, M22=" + scale + ", sizingMethod='auto expand')";
     } else {
         node.style.setProperty('transform', 'scale(1, ' + scale + ') translateY(' + offsetY + 'px)', null);
         node.style.setProperty('-moz-transform', 'scale(1, ' + scale + ') translateY(' + offsetY + 'px)', null);
