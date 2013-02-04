@@ -337,11 +337,20 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
  
         break;
       case 'mo':
+        var fragment = mdgw.mathml.createElement('div', tagName, target);
+        if (child.childNodes.length == 1 && child.childNodes[0].nodeType == 3) {
+            var nodeText = child.childNodes[0].nodeValue;
+            if (nodeText == '(' || nodeText == ')' || nodeText == '{' || nodeText == '}') {
+                this._handlers.push(new mdgw.mathml.StretchHandler(target, fragment));
+            }
+        }
+        this._recursive(fragment, child);
+        break;
       case 'mi':
       case 'mn':
       case 'mtext':
       case 'ms':
-        var fragment = mdgw.mathml.createElement('span', tagName, target);
+        var fragment = mdgw.mathml.createElement('div', tagName, target);
         this._recursive(fragment, child);
         break;
       case 'mspace':
