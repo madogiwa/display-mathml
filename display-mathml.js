@@ -283,7 +283,14 @@ mdgw.mathml.MathMLRenderer.prototype.render = function(target, root) {
  */
 mdgw.mathml.MathMLRenderer.prototype.resize = function() {
     for (var i = 0; i < this._handlers.length; i++) {
-        this._handlers[i].update();
+        if (this._handlers[i] instanceof mdgw.mathml.SameHeightHandler) {
+            this._handlers[i].update();
+        }
+    }
+    for (var i = 0; i < this._handlers.length; i++) {
+        if (!(this._handlers[i] instanceof mdgw.mathml.SameHeightHandler)) {
+            this._handlers[i].update();
+        }
     }
 };
 
@@ -379,7 +386,7 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var base = mdgw.mathml.createElement('div', 'msqrt-base', fragment);
         this._recursive(base, child);
 
-        this._handlers.push(new mdgw.mathml.StretchHandler(base, root));
+        this._handlers.push(new mdgw.mathml.StretchHandler(base, root, true));
 
         break;
       case 'mroot':

@@ -102,21 +102,23 @@
 
 .math .msqrt {
     padding-top: 0.4em;
+    vertical-align: middle;
 }
 
 .math .msqrt-root {
+    vertical-align: middle;
     font-size: 16px;
 }
 
 .math .msqrt-base {
+    vertical-align: top;
     border-top: 1px solid #000;
-
     padding-left: 0.4ex;
 }
 
 .math .mroot {
     padding-top: 6.4px;
-    vertical-align: bottom;
+    vertical-align: middle;
 }
 
 .math .mroot-root {
