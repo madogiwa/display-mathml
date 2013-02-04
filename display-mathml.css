@@ -77,20 +77,27 @@
 }
 
 .math .mfrac-numerator {
-    display: block;
+    display: inline-block;
+    /display: inline;
+    /zoom: 1;
     width: 100%;
 
     border-bottom: 1px solid #000;
 }
 
+.math .mfrac-numerator * {
+    vertical-align: bottom;
+}
+
 .math .mfrac-denominator {
-    display: block;
+    display: inline-block;
+    /display: inline;
+    /zoom: 1;
     width: 100%;
-/*
-    position: relative;
-    top: -1px;
-    border-top: 1px solid #000;
-*/
+}
+
+.math .mfrac-denominator * {
+    vertical-align: top;
 }
 
 .math .msqrt {
@@ -108,30 +115,24 @@
 }
 
 .math .mroot {
-    padding-top: 0.4em;
-}
-
-.math .mroot-symbol {
-    position: relative;
+    padding-top: 6.4px;
+    vertical-align: bottom;
 }
 
 .math .mroot-root {
+    vertical-align: middle;
     font-size: 20px;
 }
 
 .math .mroot-index {
+    vertical-align: top;
     font-size: 64%;
-
-    position: absolute;
-    top: -50%;
-
-    /* IE6, 7 */
-    /position: relative\9;
-    /top:  -25%\9;
 }
 
 .math .mroot-base {
+    vertical-align: top;
     border-top: 1px solid #000;
+    padding-left: 0.4ex;
 }
 
 .math .mstyle {

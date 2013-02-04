@@ -379,15 +379,14 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         var base = mdgw.mathml.createElement('div', 'msqrt-base', fragment);
         this._recursive(base, child);
 
-        this._handlers.push(new mdgw.mathml.StretchHandler(base, root));
+        this._handlers.push(new mdgw.mathml.StretchHandler(base, root, true));
 
         break;
       case 'mroot':
         var fragment = mdgw.mathml.createElement('div', 'mroot', target);
-        var symbol = mdgw.mathml.createElement('div', 'mroot-symbol', fragment);
 
-        var index = mdgw.mathml.createElement('div', 'mroot-index', symbol);
-        var root = mdgw.mathml.createElement('div', 'mroot-root', symbol);
+        var index = mdgw.mathml.createElement('div', 'mroot-index', fragment);
+        var root = mdgw.mathml.createElement('div', 'mroot-root', fragment);
         root.appendChild(target.ownerDocument.createTextNode('√'));
 
         var base = mdgw.mathml.createElement('div', 'mroot-base', fragment);
@@ -395,7 +394,7 @@ mdgw.mathml.MathMLRenderer.prototype._handle = function(target, child) {
         this._recursive(base, children[0]);
         this._recursive(index, children[1]);
 
-        this._handlers.push(new mdgw.mathml.StretchHandler(base, root));
+        this._handlers.push(new mdgw.mathml.StretchHandler(base, root, true));
 
         break;
       case 'mfenced':
@@ -635,9 +634,10 @@ mdgw.mathml.SameHeightHandler.prototype.update = function() {
 /*
  * StretchHandler
  */
-mdgw.mathml.StretchHandler = function(reference, target) {
+mdgw.mathml.StretchHandler = function(reference, target, adjustOffsetY) {
     this._reference = reference;
     this._target = target;
+    this._adjustOffsetY = adjustOffsetY;
 };
 
 /*
@@ -667,17 +667,16 @@ mdgw.mathml.StretchHandler.prototype.update = function() {
 mdgw.mathml.StretchHandler.prototype.stretch = function(node, height) {
     var currentHeight = this.getHeight(node);
     var scale = height / currentHeight;
+    var marginTop = 6.4;
     var offsetY = 0;
+    if (this._adjustOffsetY) {
+        offsetY = (height - currentHeight + marginTop) / 2.0 / scale;
+    }
 
     var info = mdgw.mathml.getBrowserInfo();
     if (info.type == 'msie' && info.version < 10) {
-        console.log('height:' + height + ' current: ' + currentHeight + ' -' + (height - currentHeight) / 2);
         node.style.position = 'relative';
-        offsetY = (-(height - currentHeight) / 2);
-        if (info.engine < 8.0) {
-            offsetY = -offsetY;
-        }
-        node.style.top =  offsetY + 'px';
+        node.style.top = (offsetY - marginTop / 2.0) + 'px';
 
         node.style.filter = "progid:DXImageTransform.Microsoft.Matrix(dz=1.0, dy=20, sizingMethod='auto expand', M11=1, M12=0, M21=0, M22=" + scale + ")";
         node.style.MsFilter = "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=1, M12=0, M21=0, M22=" + scale + ")";
