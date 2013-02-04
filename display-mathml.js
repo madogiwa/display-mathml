@@ -653,11 +653,10 @@ mdgw.mathml.StretchHandler.prototype.update = function() {
     this.stretch(this._target, height);
 
     var browserInfo = mdgw.mathml.getBrowserInfo();
-    if ((browserInfo.type == 'msie' && browserInfo.engine >= 8) ||
-        (browserInfo.type != 'opera')) {
-        // avoid setHeight bug
-    } else {
-        this.setHeight(this._target, height);
+    if (browserInfo.type == 'msie') {
+        var visibility = this._target.style.visibility;
+        this._target.style.visibility = 'hidden';
+        this._target.style.visibility = visibility;
     }
 };
 
@@ -674,7 +673,7 @@ mdgw.mathml.StretchHandler.prototype.stretch = function(node, height) {
     }
 
     var info = mdgw.mathml.getBrowserInfo();
-    if (info.type == 'msie' && info.version < 10) {
+    if (info.type == 'msie' && info.version < 9) {
         node.style.position = 'relative';
         node.style.top = (offsetY - marginTop / 2.0) + 'px';
 
@@ -685,6 +684,7 @@ mdgw.mathml.StretchHandler.prototype.stretch = function(node, height) {
         node.style.setProperty('-moz-transform', 'scale(1, ' + scale + ') translateY(' + offsetY + 'px)', null);
         node.style.setProperty('-webkit-transform', 'scale(1, ' + scale + ') translateY(' + offsetY + 'px)', null);
         node.style.setProperty('-o-transform', 'scale(1, ' + scale + ') translateY(' + offsetY + 'px)', null);
+        node.style.setProperty('-ms-transform', 'scale(1, ' + scale + ') translateY(' + offsetY + 'px)', null);
     }
 };
 
