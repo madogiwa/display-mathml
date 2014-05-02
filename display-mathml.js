@@ -54,7 +54,7 @@ define(function(require){
             try {
                 this.replace(mathTags[i]);
             } catch (x) {
-                console.log('replace failed:' + x);
+                //console.log('replace failed:' + x);
             }
         }
     };
@@ -115,7 +115,7 @@ define(function(require){
         if (browserInfo.type == 'msie') {
             if (!mathTag.outerHTML) {
                 // maybe mime application/xml+html
-                console.log('maybe mime application/xml+html');
+                //console.log('maybe mime application/xml+html');
 
                 var dummy = mathTag.ownerDocument.createElement('div');
                 dummy.appendChild(mathTag);
@@ -126,10 +126,10 @@ define(function(require){
             if (html.match(/^\<\?xml:namespace prefix = [a-z0-9]*.*\/\>/i, '') ||
                 html.match(/^\<([a-zA-Z0-9.]+\:)?math/)) {
 
-                console.log('retrieve method: MSIE with XML');
+                //console.log('retrieve method: MSIE with XML');
                 xml = this.retrieveXMLForMSIEWithXML(mathTag, html);
             } else {
-                console.log('retrieve method: MSIE');
+                //console.log('retrieve method: MSIE');
                 xml = this.retrieveXMLForMSIE(mathTag);
             }
 
@@ -138,7 +138,7 @@ define(function(require){
                 return (unicode) ? unicode : '&amp;' + g1 + ';';
             });
         } else if (typeof XMLSerializer != 'undefined') {
-            console.log('retrieve method: Modern Browser');
+            //console.log('retrieve method: Modern Browser');
             xml = this.retrieveXMLForModernBrowser(mathTag);
         } else {
             throw new Error('unsupported browser');
@@ -150,7 +150,7 @@ define(function(require){
     mdgw.mathml.DisplayMathML.prototype.retrieveXMLForModernBrowser = function(mathTag) {
         var serializer = new XMLSerializer();
         var xml = serializer.serializeToString(mathTag);
-        console.log(xml);
+        //console.log(xml);
 
         var dummy = mathTag.ownerDocument.createElement('div');
         dummy.appendChild(mathTag);
@@ -174,10 +174,10 @@ define(function(require){
         var node = mathTag;
         do {
             if (node.nodeType == 1) {
-                console.log(node.tagName + ':' + node.outerHTML);
+                //console.log(node.tagName + ':' + node.outerHTML);
                 xml += node.outerHTML.toLowerCase();
             } else {
-                console.log(node.tagName + ':' + node.tagValue);
+                //console.log(node.tagName + ':' + node.tagValue);
                 xml += node.nodeValue;
             }
             var next = node.nextSibling;
@@ -191,14 +191,14 @@ define(function(require){
 
         xml += '<' + terminator.toLowerCase() + '>';
         xml = xml.replace(/^\<\?xml:namespace prefix = [a-z0-9]*.*\/\>/i, '');
-        console.log('xml:' + xml);
+        //console.log('xml:' + xml);
 
         return xml;
     };
 
     mdgw.mathml.DisplayMathML.prototype.retrieveXMLForMSIEWithXML = function(mathTag, html) {
         var xml = html.replace(/^\<\?xml:namespace prefix = [a-z0-9]*.*\/\>/i, '');
-        console.log('xml:' + xml);
+        //console.log('xml:' + xml);
 
         var dummy = mathTag.ownerDocument.createElement('div');
         dummy.appendChild(mathTag);
@@ -283,7 +283,7 @@ define(function(require){
         }
 
         var children = node.childNodes;
-        console.log('recursive:' + node.tagName);
+        //console.log('recursive:' + node.tagName);
 
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
@@ -304,7 +304,7 @@ define(function(require){
         }
 
         var tagName = child.tagName.toLowerCase();
-        console.log('handle:' + tagName);
+        //console.log('handle:' + tagName);
 
         // remove namespace prefix
         tagName = tagName.replace(/^[a-zA-Z0-9]+:/, '');
