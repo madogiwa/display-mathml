@@ -7,7 +7,7 @@ init with Requirejs:
 
 ```javascript
 var DMML = require('display-mathml-amd');
-var displayMathML = new DMML.displayMathml();
+var displayMathML = new DMML.displayMathML();
 ```
 replace all elements in document:
 
